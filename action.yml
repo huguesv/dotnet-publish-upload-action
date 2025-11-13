@@ -1,0 +1,47 @@
+name: 'Publish And Upload Artifact'
+description: 'Runs dotnet publish, zips the output and uploads it to GitHub artifacts. Make sure to install dotnet before calling this action.'
+inputs:
+  working-dir:
+    description: 'Working directory to use for the calls to dotnet.'
+    required: true
+  project-path:
+    description: 'Path to the .csproj file to build and publish. Relative to the working directory input.'
+    required: true
+  build-config:
+    description: 'Configuration to build, ex: Release or Debug. Default is Release'
+    required: false
+    default: 'Release'
+  dotnet-version:
+    description: 'Target .NET version to pass to dotnet publish, ex: net10.0'
+    required: true
+  dotnet-runtime:
+    description: 'Target .NET runtime to pass to dotnet publish, ex: win-x64'
+    required: true
+  publish-folder:
+    description: 'Output folder of the publish operation, which is controlled by the project msbuild properties'
+    required: true
+  artifact-name:
+    description: 'Unique name for the artifact'
+    required: true
+  artifact-file-name:
+    description: 'Name of the artifact file, without the extension'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+  - name: Build / Publish
+    working-directory: ${{ inputs.working-dir }}
+    run: dotnet publish ${{ inputs.project-path }} -f ${{ inputs.dotnet-version }} -r ${{ inputs.dotnet-runtime }} -c ${{ $inputs.build-config }} --self-contained -p:DebugType=None -p:DebugSymbols=False
+
+  - name: Zip binaries
+    working-directory: ${{ inputs.publish-folder }}
+    run: |
+      mkdir -p ${{ github.workspace }}/artifact-output/${{ inputs.dotnet-version }}/${{ inputs.dotnet-runtime }}/${{ $inputs.build-config }}
+      zip -r ${{ github.workspace }}/artifact-output/${{ inputs.dotnet-version }}/${{ inputs.dotnet-runtime }}/${{ $inputs.build-config }}/${{ inputs.artifact-file-name }}.zip *
+
+  - name: Upload binaries artifact
+    uses: actions/upload-artifact@v4
+    with:
+      name: ${{ artifact-name }}
+      path: ${{ github.workspace }}/artifact-output/${{ inputs.dotnet-version }}/${{ inputs.dotnet-runtime }}/${{ $inputs.build-config }}/${{ inputs.artifact-file-name }}.zip
