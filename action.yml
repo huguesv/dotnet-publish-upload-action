@@ -4,8 +4,8 @@ inputs:
   working-dir:
     description: 'Working directory to use for the calls to dotnet.'
     required: true
-  project-path:
-    description: 'Path to the .csproj file to build and publish. Relative to the working directory input.'
+  project-relative-path:
+    description: 'Path to the .csproj file to build and publish. Relative to the specified working-dir input.'
     required: true
   build-config:
     description: 'Configuration to build, ex: Release or Debug. Default is Release'
@@ -17,8 +17,8 @@ inputs:
   dotnet-runtime:
     description: 'Target .NET runtime to pass to dotnet publish, ex: win-x64'
     required: true
-  publish-folder:
-    description: 'Output folder of the publish operation, which is controlled by the project msbuild properties'
+  publish-absolute-folder:
+    description: 'Absolute output folder path of the publish operation, which is controlled by the project msbuild properties. Does NOT use the specified working-dir input.'
     required: true
   artifact-name:
     description: 'Unique name for the artifact'
