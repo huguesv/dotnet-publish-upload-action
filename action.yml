@@ -35,6 +35,11 @@ runs:
     working-directory: ${{ inputs.working-dir }}
     run: dotnet publish ${{ inputs.project-path }} -f ${{ inputs.dotnet-version }} -r ${{ inputs.dotnet-runtime }} -c ${{ inputs.build-config }} --self-contained -p:DebugType=None -p:DebugSymbols=False
 
+  - name: Display publish folder contents
+    shell: bash
+    working-directory: ${{ inputs.publish-absolute-folder }}
+    run: ls -R
+
   - name: Zip binaries
     shell: bash
     working-directory: ${{ inputs.publish-absolute-folder }}
