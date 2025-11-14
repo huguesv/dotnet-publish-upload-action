@@ -32,16 +32,16 @@ runs:
   steps:
   - name: Build / Publish
     working-directory: ${{ inputs.working-dir }}
-    run: dotnet publish ${{ inputs.project-path }} -f ${{ inputs.dotnet-version }} -r ${{ inputs.dotnet-runtime }} -c ${{ $inputs.build-config }} --self-contained -p:DebugType=None -p:DebugSymbols=False
+    run: dotnet publish ${{ inputs.project-path }} -f ${{ inputs.dotnet-version }} -r ${{ inputs.dotnet-runtime }} -c ${{ inputs.build-config }} --self-contained -p:DebugType=None -p:DebugSymbols=False
 
   - name: Zip binaries
     working-directory: ${{ inputs.publish-absolute-folder }}
     run: |
-      mkdir -p ${{ github.workspace }}/artifact-output/${{ inputs.dotnet-version }}/${{ inputs.dotnet-runtime }}/${{ $inputs.build-config }}
-      zip -r ${{ github.workspace }}/artifact-output/${{ inputs.dotnet-version }}/${{ inputs.dotnet-runtime }}/${{ $inputs.build-config }}/${{ inputs.artifact-file-name }}.zip *
+      mkdir -p ${{ github.workspace }}/artifact-output/${{ inputs.dotnet-version }}/${{ inputs.dotnet-runtime }}/${{ inputs.build-config }}
+      zip -r ${{ github.workspace }}/artifact-output/${{ inputs.dotnet-version }}/${{ inputs.dotnet-runtime }}/${{ inputs.build-config }}/${{ inputs.artifact-file-name }}.zip *
 
   - name: Upload binaries artifact
     uses: actions/upload-artifact@v4
     with:
       name: ${{ artifact-name }}
-      path: ${{ github.workspace }}/artifact-output/${{ inputs.dotnet-version }}/${{ inputs.dotnet-runtime }}/${{ $inputs.build-config }}/${{ inputs.artifact-file-name }}.zip
+      path: ${{ github.workspace }}/artifact-output/${{ inputs.dotnet-version }}/${{ inputs.dotnet-runtime }}/${{ inputs.build-config }}/${{ inputs.artifact-file-name }}.zip
