@@ -31,10 +31,12 @@ runs:
   using: 'composite'
   steps:
   - name: Build / Publish
+    shell: bash
     working-directory: ${{ inputs.working-dir }}
     run: dotnet publish ${{ inputs.project-path }} -f ${{ inputs.dotnet-version }} -r ${{ inputs.dotnet-runtime }} -c ${{ inputs.build-config }} --self-contained -p:DebugType=None -p:DebugSymbols=False
 
   - name: Zip binaries
+    shell: bash
     working-directory: ${{ inputs.publish-absolute-folder }}
     run: |
       mkdir -p ${{ github.workspace }}/artifact-output/${{ inputs.dotnet-version }}/${{ inputs.dotnet-runtime }}/${{ inputs.build-config }}
@@ -43,5 +45,5 @@ runs:
   - name: Upload binaries artifact
     uses: actions/upload-artifact@v4
     with:
-      name: ${{ artifact-name }}
+      name: ${{ inputs.artifact-name }}
       path: ${{ github.workspace }}/artifact-output/${{ inputs.dotnet-version }}/${{ inputs.dotnet-runtime }}/${{ inputs.build-config }}/${{ inputs.artifact-file-name }}.zip
